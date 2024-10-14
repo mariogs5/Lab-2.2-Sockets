@@ -5,6 +5,28 @@ using UnityEngine.SceneManagement;
 
 public class ChangeScenes : MonoBehaviour
 {
+    public GameObject menu;
+    public GameObject server;
+    public GameObject client;
+
+    public void GoBackToMenu()
+    {
+        server.SetActive(false);
+        client.SetActive(false);
+        menu.SetActive(true);
+    }
+    public void OnServerClicked()
+    {
+        server.SetActive(true);
+        menu.SetActive(false);
+    }
+
+    public void OnClientClicked()
+    {
+        client.SetActive(true);
+        menu.SetActive(false);
+    }
+
     public void ChangeToMenu()
     {
         SceneManager.LoadScene(0);
