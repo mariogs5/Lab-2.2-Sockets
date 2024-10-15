@@ -9,10 +9,17 @@ public class ChangeScenes : MonoBehaviour
     public GameObject server;
     public GameObject client;
 
+    public GameObject serverData;
+    public GameObject clientData;
+
     public void GoBackToMenu()
     {
         server.SetActive(false);
         client.SetActive(false);
+
+        serverData.SetActive(false);
+        clientData.SetActive(false);
+
         menu.SetActive(true);
     }
     public void OnServerClicked()
@@ -34,11 +41,13 @@ public class ChangeScenes : MonoBehaviour
 
     public void ChangeToServer()
     {
+        serverData.SetActive(true);
         SceneManager.LoadScene(1);
     }
 
     public void ChangeToClient()
     {
+        clientData.SetActive(true);
         SceneManager.LoadScene(2);
     }
 }

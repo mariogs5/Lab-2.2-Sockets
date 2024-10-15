@@ -1,47 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ChatManager : MonoBehaviour
 {
-    public GameObject createTCP;
-    public GameObject createUDP;
+    public static ChatManager Singleton;
 
-    public GameObject joinTCP;
-    public GameObject joinUDP;
+    [SerializeField] ChatMessage chatMessagePrefab;
+    [SerializeField] CanvasGroup chatContent;
+    [SerializeField] TMP_InputField chatInput;
 
-    void Start()
+    private string userName;
+
+    void Awake()
     {
-        
+        Singleton = this;
     }
 
-    void Update()
+    private void Start()
     {
-        
+        userName = ServerDataManager.instance.userName;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        if (other.gameObject.tag == "serverTCP")
+        if (Input.GetKeyDown(KeyCode.Return)) 
         {
-            createTCP.SetActive(true);
-        }
-
-        if (other.gameObject.tag == "serverUDP")
-        {
-            createUDP.SetActive(true);
+            SendChatMessage(chatInput.text, userName);
+            chatInput.text = "";
         }
     }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "serverTCP")
-        {
-            createTCP.SetActive(false);
-        }
 
-        if (other.gameObject.tag == "serverUDP")
-        {
-            createUDP.SetActive(false);
-        }
+    public void CreateTCPServer()
+    {
+
+    }
+    public void CreateUDPServer()
+    {
+
+    }
+
+    public void SendChatMessage(string _message, string _fromWho = null)
+    {
+        if (string.IsNullOrEmpty(_message)) return;
+
+        string S = _fromWho + ": " + _message;
+        //Send message
+    }
+
+    void AddMessage(string msg)
+    {
+        ChatMessage CM = Instantiate(chatMessagePrefab, chatContent.transform);
+        CM.SetText(msg);
     }
 }
