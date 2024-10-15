@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - TCP
-  - UDP
+  - serverTCP
+  - serverUDP
+  - joinTCP
+  - joinUDP
   layers:
   - Default
   - TransparentFX
