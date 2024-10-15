@@ -4,15 +4,18 @@ using System.Net.Sockets;
 using System.Threading;
 using TMPro;
 using System.Text;
+using System.Collections.Generic;
+using UnityEngine.UIElements;
+using static ServerTCP;
 
 public class ServerTCP : MonoBehaviour
 {
     Socket socket;
     Thread mainThread = null;
 
-    public GameObject UItextObj;
-    TextMeshProUGUI UItext;
-    string serverText;
+    //public GameObject UItextObj;
+    //TextMeshProUGUI UItext;
+    //string serverText;
 
     public struct User
     {
@@ -20,19 +23,68 @@ public class ServerTCP : MonoBehaviour
         public Socket socket;
     }
 
-    void Start()
+    #region NEW VARS
+    public static ServerTCP Singleton;
+
+    [SerializeField] ChatMessage chatMessagePrefab;
+    [SerializeField] CanvasGroup chatContent;
+    [SerializeField] TMP_InputField chatInput;
+
+    private string userName;
+
+    private List <User> users;
+    #endregion
+
+    void Awake()
     {
-        UItext = UItextObj.GetComponent<TextMeshProUGUI>();
+        Singleton = this;
     }
 
-    void Update()
+
+    void Start()
     {
-        UItext.text = serverText;
+        userName = ServerDataManager.instance.userName;
+        AddMessage(userName);
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SendChatMessage(chatInput.text, userName);
+            chatInput.text = "";
+        }
+    }
+
+    #region NEW FUNCIONS
+    public void SendChatMessage(string _message, string _fromWho = null)
+    {
+        if (string.IsNullOrEmpty(_message)) return;
+
+        string S = _fromWho + ": " + _message;
+        //Send message
+        SendMessageToAllUsers(users, S);
+    }
+
+    void SendMessageToAllUsers(List <User> users, string message)
+    {
+        byte[] data = Encoding.ASCII.GetBytes(message);
+        for (int i = 0; i < users.Count; i++)
+        {
+            users[i].socket.Send(data);
+        }
+    }
+
+    void AddMessage(string msg)
+    {
+        ChatMessage CM = Instantiate(chatMessagePrefab, chatContent.transform);
+        CM.SetText(msg);
+    }
+    #endregion
 
     public void startServer()
     {
-        serverText = "Starting TCP Server...";
+        AddMessage("Starting " + ServerDataManager.instance.serverName + " Server.");
 
         //TO DO 1
         //Create and bind the socket
@@ -57,6 +109,7 @@ public class ServerTCP : MonoBehaviour
         while (true)
         {
             User newUser = new User();
+            
             newUser.name = "";
             //TO DO 3
             //TCP makes it so easy to manage conections, so we are going
@@ -71,7 +124,9 @@ public class ServerTCP : MonoBehaviour
 
             newUser.socket = socket.Accept(); //accept the socket
             IPEndPoint clientep = (IPEndPoint)newUser.socket.RemoteEndPoint;
-            serverText = serverText + "\n" + "Connected with " + clientep.Address.ToString() + " at port " + clientep.Port.ToString();
+            AddMessage("Connected with " + clientep.Address.ToString() + " at port " + clientep.Port.ToString());
+
+            users.Add(newUser); //Añadir cada Usuario nuevo a una lista de usuarios
 
             //TO DO 5
             //For every client, we call a new thread to receive their messages. 
@@ -100,13 +155,13 @@ public class ServerTCP : MonoBehaviour
                 break;
             else
             {
-                serverText = serverText + "\n" + Encoding.ASCII.GetString(data, 0, recv);
+                AddMessage(Encoding.ASCII.GetString(data, 0, recv));
             }
 
             //TO DO 6
             //We'll send a ping back every time a message is received
             //Start another thread to send a message, same parameters as this one.
-            Thread answer = new Thread(() => Send(user));
+            Thread answer = new Thread(() => Send(user, "You have conected to: " + ServerDataManager.instance.serverName + "Server"));
             answer.Start();
         }
     }
@@ -114,9 +169,9 @@ public class ServerTCP : MonoBehaviour
     //TO DO 6
     //Now, we'll use this user socket to send a "ping".
     //Just call the socket's send function and encode the string.
-    void Send(User user)
+    void Send(User user, string msj)
     {
-        byte[] data = Encoding.ASCII.GetBytes("Ping");
+        byte[] data = Encoding.ASCII.GetBytes(msj);
         user.socket.Send(data);
     }
 }

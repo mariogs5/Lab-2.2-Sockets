@@ -10,16 +10,33 @@ public class ChatOpener : MonoBehaviour
     public GameObject joinTCP;
     public GameObject joinUDP;
 
-    private void OnTriggerEnter(Collider other)
+    private bool tcpActive = false;
+    private bool udpActive = false;
+
+    private void Update()
     {
-        if (other.gameObject.tag == "serverTCP")
+        if(tcpActive && Input.GetKeyDown(KeyCode.Return))
         {
             createTCP.SetActive(true);
         }
 
-        if (other.gameObject.tag == "serverUDP")
+        if (udpActive && Input.GetKeyDown(KeyCode.Return))
         {
             createUDP.SetActive(true);
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "serverTCP")
+        {
+            tcpActive = true;
+        }
+
+        if (other.gameObject.tag == "serverUDP")
+        {
+            udpActive = true;
         }
     }
     private void OnTriggerExit(Collider other)

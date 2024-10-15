@@ -409,8 +409,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChangeScenes, Assembly-CSharp
-        m_MethodName: OnServerClicked
+        m_TargetAssemblyTypeName: ChatManager, Assembly-CSharp
+        m_MethodName: CreateUDPServer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -681,8 +681,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ChangeScenes, Assembly-CSharp
-        m_MethodName: OnServerClicked
+        m_TargetAssemblyTypeName: ChatManager, Assembly-CSharp
+        m_MethodName: CreateTCPServer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2564,9 +2564,8 @@ GameObject:
   m_Component:
   - component: {fileID: 690405507}
   - component: {fileID: 690405511}
-  - component: {fileID: 690405510}
   - component: {fileID: 690405509}
-  - component: {fileID: 690405508}
+  - component: {fileID: 690405510}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2588,23 +2587,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1569935012}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -291.50006, y: -0.000061035156}
   m_SizeDelta: {x: -583, y: 0}
-  m_Pivot: {x: 0, y: 1}
---- !u!225 &690405508
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690405506}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &690405509
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2617,7 +2604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 1
+  m_HorizontalFit: 0
   m_VerticalFit: 2
 --- !u!114 &690405510
 MonoBehaviour:
@@ -2628,27 +2615,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 690405506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: 0
-  m_MinHeight: 0
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: 1
-  m_FlexibleHeight: 1
-  m_LayoutPriority: 1
---- !u!114 &690405511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 690405506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -2656,13 +2623,27 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 7
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 1
-  m_ConstraintCount: 1
+  m_ChildAlignment: 6
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!225 &690405511
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690405506}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &796141243
 GameObject:
   m_ObjectHideFlags: 0
@@ -2707,12 +2688,12 @@ GameObject:
   - component: {fileID: 823224014}
   - component: {fileID: 823224013}
   m_Layer: 5
-  m_Name: Chat Canvas
+  m_Name: TCP Chat Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &823224013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3390,7 +3371,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2047573129}
   m_HandleRect: {fileID: 2047573128}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3557,7 +3538,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4425428723088313499, guid: fc9b148a2950aaf4cba8422632222c5d, type: 3}
       insertIndex: 3
-      addedObject: {fileID: 1686558442}
+      addedObject: {fileID: 1686558449}
   m_SourcePrefab: {fileID: 100100000, guid: fc9b148a2950aaf4cba8422632222c5d, type: 3}
 --- !u!1 &1109440459
 GameObject:
@@ -4341,7 +4322,7 @@ GameObject:
   - component: {fileID: 1353114625}
   - component: {fileID: 1353114626}
   m_Layer: 0
-  m_Name: Chat Manager
+  m_Name: TCP Chat Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4371,11 +4352,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1353114624}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e637346f4d16e17429ee86bf502380fc, type: 3}
+  m_Script: {fileID: 11500000, guid: b3926762611f9a04dbe481de95283c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chatMessagePrefab: {fileID: 6001391530878881490, guid: 0017721663cf4b54d87b2ad11e66841d, type: 3}
-  chatContent: {fileID: 690405508}
+  chatMessagePrefab: {fileID: 5083292142926420299, guid: 51b4aaec6e8e34b4e9ef358cbf3d8f53, type: 3}
+  chatContent: {fileID: 690405511}
   chatInput: {fileID: 844503665}
 --- !u!1 &1428258219
 GameObject:
@@ -5798,7 +5779,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4425428723088313499, guid: fc9b148a2950aaf4cba8422632222c5d, type: 3}
   m_PrefabInstance: {fileID: 1084672250}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1686558442
+--- !u!114 &1686558449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5810,8 +5791,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39aa571480565904e9b401030bd5c15d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createTCP: {fileID: 284382492}
-  createUDP: {fileID: 2081463419}
+  createTCP: {fileID: 823224012}
+  createUDP: {fileID: 0}
   joinTCP: {fileID: 0}
   joinUDP: {fileID: 0}
 --- !u!1001 &1688741613
@@ -6625,7 +6606,7 @@ RectTransform:
   m_Father: {fileID: 1767018046}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6930,7 +6911,7 @@ MonoBehaviour:
   m_Content: {fileID: 690405507}
   m_Horizontal: 0
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
