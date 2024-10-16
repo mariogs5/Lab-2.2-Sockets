@@ -23,6 +23,8 @@ namespace Invector.vCharacterController
 
         #endregion
 
+        public bool chatOpen = false;
+
         protected virtual void Start()
         {
             InitilizeController();
@@ -38,8 +40,11 @@ namespace Invector.vCharacterController
 
         protected virtual void Update()
         {
-            InputHandle();                  // update the input methods
-            cc.UpdateAnimator();            // updates the Animator Parameters
+            if (!chatOpen)
+            {
+                InputHandle();                  // update the input methods
+                cc.UpdateAnimator();            // updates the Animator Parameters
+            }
         }
 
         public virtual void OnAnimatorMove()
