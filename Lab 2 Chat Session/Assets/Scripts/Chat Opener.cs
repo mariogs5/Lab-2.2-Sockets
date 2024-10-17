@@ -7,27 +7,27 @@ public class ChatOpener : MonoBehaviour
 {
     [SerializeField] vThirdPersonInput characterInput;
 
-    public GameObject createTCP;
-    public GameObject createUDP;
+    public GameObject openServerTCPChat;  // Abrir / Cerrar Server UDP Chat
+    public GameObject openServerUDPChat;  // Abrir / Cerrar Server TCP Chat
 
-    public GameObject joinTCP;
-    public GameObject joinUDP;
+    public GameObject openClientTCPChat;  // Abrir / Cerrar Client TCP Chat
+    public GameObject openClientUDPChat;  // Abrir / Cerrar Client UDP Chat
 
-    private bool tcpActive = false;
-    private bool udpActive = false;
+    private bool nearTCPActive = false;
+    private bool nearUDPActive = false;
 
     private void Update()
     {
-        if(tcpActive && Input.GetKeyDown(KeyCode.Return))
+        if(nearTCPActive && Input.GetKeyDown(KeyCode.Return))
         {
             characterInput.chatOpen = true;
-            createTCP.SetActive(true);
+            openServerTCPChat.SetActive(true);
         }
 
-        if (udpActive && Input.GetKeyDown(KeyCode.Return))
+        if (nearUDPActive && Input.GetKeyDown(KeyCode.Return))
         {
             characterInput.chatOpen = true;
-            createUDP.SetActive(true);
+            openServerUDPChat.SetActive(true);
         }
 
     }
@@ -36,12 +36,12 @@ public class ChatOpener : MonoBehaviour
     {
         if (other.gameObject.tag == "serverTCP")
         {
-            tcpActive = true;
+            nearTCPActive = true;
         }
 
         if (other.gameObject.tag == "serverUDP")
         {
-            udpActive = true;
+            nearUDPActive = true;
         }
     }
     private void OnTriggerExit(Collider other)
@@ -49,13 +49,13 @@ public class ChatOpener : MonoBehaviour
         if (other.gameObject.tag == "serverTCP")
         {
             characterInput.chatOpen = false;
-            createTCP.SetActive(false);
+            openServerTCPChat.SetActive(false);
         }
 
         if (other.gameObject.tag == "serverUDP")
         {
             characterInput.chatOpen = false;
-            createUDP.SetActive(false);
+            openServerUDPChat.SetActive(false);
         }
     }
 }

@@ -7,15 +7,12 @@ using System.Text;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 using static ServerTCP;
+using UnityEditor.VersionControl;
 
 public class ServerTCP : MonoBehaviour
 {
     Socket socket;
     Thread mainThread = null;
-
-    //public GameObject UItextObj;
-    //TextMeshProUGUI UItext;
-    //string serverText;
 
     public struct User
     {
@@ -26,13 +23,13 @@ public class ServerTCP : MonoBehaviour
     #region NEW VARS
     public static ServerTCP Singleton;
 
-    [SerializeField] ChatMessage chatMessagePrefab;
-    [SerializeField] CanvasGroup chatContent;
-    [SerializeField] TMP_InputField chatInput;
+    [SerializeField] ChatManager chatManager;  // Script to pop messages in the Server chat
+    [SerializeField] TMP_InputField chatInput; // Text you want to send to the users
 
-    private string userName;
+    private string userName;   // Server User name
+    private string serverName; // Server name
 
-    private List <User> users;
+    private List <User> users; // List of Users Connected to the Server
     #endregion
 
     void Awake()
@@ -43,48 +40,59 @@ public class ServerTCP : MonoBehaviour
 
     void Start()
     {
-        userName = ServerDataManager.instance.userName;
-        AddMessage(userName);
+        userName = "Boty";
+        serverName = "Server Boty";
+
+        startServer();
+
+        if (!string.IsNullOrEmpty(ServerDataManager.instance.serverName))       // Check if the value is null
+        {
+            serverName = ServerDataManager.instance.serverName;  // Get the Server User name
+        }
+
+        if (!string.IsNullOrEmpty(ServerDataManager.instance.userName))         // Check if the value is null
+        {
+            userName = ServerDataManager.instance.userName;      // Get the Server name
+        }
+        chatManager.SendMessageToTCPChat(userName);              // Print the User name as a safety check
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return))                         // When the button is pressed, start the message sendig procces
         {
-            SendChatMessage(chatInput.text, userName);
-            chatInput.text = "";
+            SendLocalChatMessage(chatInput.text,userName);
+            //SendMessageToAllUsers(users, chatInput.text, userName);   // Start the message sending procces
+            chatInput.text = "";                                      // Reset the input box text
         }
     }
 
     #region NEW FUNCIONS
-    public void SendChatMessage(string _message, string _fromWho = null)
+    public void SendLocalChatMessage(string _message = "", string _fromWho = "")
     {
-        if (string.IsNullOrEmpty(_message)) return;
-
-        string S = _fromWho + ": " + _message;
-        //Send message
-        SendMessageToAllUsers(users, S);
+        if (string.IsNullOrEmpty(_message)) return;  // Check if the string have content
+        string S = _fromWho + ": " + _message;       // Format the message
+        chatManager.SendMessageToTCPChat(S);         // Send Message to the local Server chat
     }
 
-    void SendMessageToAllUsers(List <User> users, string message)
+    void SendMessageToAllUsers(List <User> users, string _message, string _fromWho = null)
     {
-        byte[] data = Encoding.ASCII.GetBytes(message);
-        for (int i = 0; i < users.Count; i++)
+        if (string.IsNullOrEmpty(_message)) return;  // Check if the string have content
+        string S = _fromWho + ": " + _message;       // Format the message
+        chatManager.SendMessageToTCPChat(S);         // Send Message to the local Server chat
+
+        byte[] data = Encoding.ASCII.GetBytes(_message);  // Encoding the message
+
+        for (int i = 0; i < users.Count; i++)     // Iterate the Users list in order to send them all the message
         {
-            users[i].socket.Send(data);
+            users[i].socket.Send(data);           // Send the message to the specific user          
         }
-    }
-
-    void AddMessage(string msg)
-    {
-        ChatMessage CM = Instantiate(chatMessagePrefab, chatContent.transform);
-        CM.SetText(msg);
     }
     #endregion
 
     public void startServer()
     {
-        AddMessage("Starting " + ServerDataManager.instance.serverName + " Server.");
+        SendLocalChatMessage("Starting " + serverName + " Server.");
 
         //TO DO 1
         //Create and bind the socket
@@ -124,7 +132,7 @@ public class ServerTCP : MonoBehaviour
 
             newUser.socket = socket.Accept(); //accept the socket
             IPEndPoint clientep = (IPEndPoint)newUser.socket.RemoteEndPoint;
-            AddMessage("Connected with " + clientep.Address.ToString() + " at port " + clientep.Port.ToString());
+            SendLocalChatMessage("Connected with " + clientep.Address.ToString() + " at port " + clientep.Port.ToString());
 
             users.Add(newUser); //Añadir cada Usuario nuevo a una lista de usuarios
 
@@ -155,13 +163,13 @@ public class ServerTCP : MonoBehaviour
                 break;
             else
             {
-                AddMessage(Encoding.ASCII.GetString(data, 0, recv));
+                SendLocalChatMessage(Encoding.ASCII.GetString(data, 0, recv));
             }
 
             //TO DO 6
             //We'll send a ping back every time a message is received
             //Start another thread to send a message, same parameters as this one.
-            Thread answer = new Thread(() => Send(user, "You have conected to: " + ServerDataManager.instance.serverName + "Server"));
+            Thread answer = new Thread(() => Send(user, "You have conected to: " + serverName + "Server"));
             answer.Start();
         }
     }

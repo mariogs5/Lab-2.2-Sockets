@@ -1,21 +1,59 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ChatManager : MonoBehaviour
 {
-    [SerializeField] GameObject tcpChat;
-    [SerializeField] GameObject udpChat;
+    public GameObject tcpChatPanel;
+    public GameObject udpChatPanel;
+    public GameObject textObject;
 
-    public void CreateTCPServer()
+    [SerializeField]
+    List<Message> messageList = new List<Message>();
+
+    void Start()
     {
-        tcpChat.SetActive(true);
-        this.gameObject.SetActive(false);
+
     }
 
-    public void CreateUDPServer()
+    void Update()
     {
-        udpChat.SetActive(true);
+        //if (Input.GetKeyDown(KeyCode.Space) && tcpChatPanel.activeInHierarchy)
+        //{
+        //    SendMessageToTCPChat("You pressed the space");
+        //}
     }
+
+    public void SendMessageToTCPChat(string text)
+    {
+        Message newMessage = new Message();
+        newMessage.text = text;
+
+        GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
+        newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
+        newMessage.textObject.text = newMessage.text;
+
+        messageList.Add(newMessage);
+    }
+
+    public void SendMessageToUDPChat(string text)
+    {
+        Message newMessage = new Message();
+        newMessage.text = text;
+
+        GameObject newText = Instantiate(textObject, udpChatPanel.transform);
+        newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
+        newMessage.textObject.text = newMessage.text;
+
+        messageList.Add(newMessage);
+    }
+}
+
+[System.Serializable]
+public class Message
+{
+    public string text;
+    public TextMeshProUGUI textObject;
 }
