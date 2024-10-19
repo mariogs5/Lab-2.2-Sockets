@@ -43,8 +43,8 @@ namespace Invector.vCharacterController
             if (!chatOpen)
             {
                 InputHandle();                  // update the input methods
-                cc.UpdateAnimator();            // updates the Animator Parameters
             }
+            cc.UpdateAnimator();            // updates the Animator Parameters
         }
 
         public virtual void OnAnimatorMove()

@@ -7,55 +7,33 @@ public class ChatOpener : MonoBehaviour
 {
     [SerializeField] vThirdPersonInput characterInput;
 
-    public GameObject openServerTCPChat;  // Abrir / Cerrar Server UDP Chat
-    public GameObject openServerUDPChat;  // Abrir / Cerrar Server TCP Chat
-
-    public GameObject openClientTCPChat;  // Abrir / Cerrar Client TCP Chat
-    public GameObject openClientUDPChat;  // Abrir / Cerrar Client UDP Chat
-
-    private bool nearTCPActive = false;
-    private bool nearUDPActive = false;
+    public GameObject openServerTCPChat;  // Open / Close Server TCP Chat
+    public GameObject openServerUDPChat;  // Open / Close Server UDP Chat
 
     private void Update()
     {
-        if(nearTCPActive && Input.GetKeyDown(KeyCode.Return))
+        if(!characterInput.chatOpen && !openServerTCPChat.activeInHierarchy && Input.GetKeyDown(KeyCode.T))
         {
             characterInput.chatOpen = true;
             openServerTCPChat.SetActive(true);
         }
 
-        if (nearUDPActive && Input.GetKeyDown(KeyCode.Return))
+        if (!characterInput.chatOpen && !openServerUDPChat.activeInHierarchy && Input.GetKeyDown(KeyCode.U))
         {
             characterInput.chatOpen = true;
             openServerUDPChat.SetActive(true);
         }
 
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "serverTCP")
+        if (openServerTCPChat.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
         {
-            nearTCPActive = true;
-        }
-
-        if (other.gameObject.tag == "serverUDP")
-        {
-            nearUDPActive = true;
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.tag == "serverTCP")
-        {
-            characterInput.chatOpen = false;
             openServerTCPChat.SetActive(false);
+            characterInput.chatOpen = false;
         }
 
-        if (other.gameObject.tag == "serverUDP")
+        if (openServerUDPChat.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
         {
-            characterInput.chatOpen = false;
             openServerUDPChat.SetActive(false);
+            characterInput.chatOpen = false;
         }
     }
 }
