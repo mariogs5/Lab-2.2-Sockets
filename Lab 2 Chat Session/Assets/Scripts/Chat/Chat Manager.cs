@@ -10,12 +10,15 @@ public class ChatManager : MonoBehaviour
     public GameObject udpChatPanel;
     public GameObject textObject;
 
+    Message messageIncoming;
+    bool tcpMessage;
+
     [SerializeField]
     List<Message> messageList = new List<Message>();
 
     void Start()
     {
-
+        
     }
 
     void Update()
@@ -24,6 +27,19 @@ public class ChatManager : MonoBehaviour
         //{
         //    SendMessageToTCPChat("You pressed the space");
         //}
+
+        if (tcpMessage)
+        {
+            CreateMessage();
+            tcpMessage = false;
+        }
+    }
+
+    void CreateMessage()
+    {
+        GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
+        messageIncoming.textObject = newText.GetComponent<TextMeshProUGUI>();
+        messageIncoming.textObject.text = messageIncoming.text;
     }
 
     public void SendMessageToTCPChat(string text)
@@ -31,9 +47,12 @@ public class ChatManager : MonoBehaviour
         Message newMessage = new Message();
         newMessage.text = text;
 
-        GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
-        newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
-        newMessage.textObject.text = newMessage.text;
+        messageIncoming = newMessage;
+        tcpMessage = true;
+
+        //GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
+        //newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
+        //newMessage.textObject.text = newMessage.text;
 
         messageList.Add(newMessage);
     }

@@ -12,7 +12,7 @@ public class IPScript : MonoBehaviour
     {
         if (ipText != null)
         {
-            ipText.text = "Creating TCP / UDP Server     IP: " + GetLocalIPAddress();
+            ipText.text = "IP: " + GetLocalIPAddress();
         }
         else
         {
