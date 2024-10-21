@@ -5,9 +5,8 @@ using System.Threading;
 using TMPro;
 using System.Text;
 
-public class ClientTCP : MonoBehaviour
+public class ClientUDP : MonoBehaviour
 {
-    string clientText;
     Socket server;
 
     [SerializeField] ChatManager chatManager;  // Script to pop messages in the Server chat
@@ -32,13 +31,17 @@ public class ClientTCP : MonoBehaviour
         }
     }
 
+    public void StartClient()  // Execute this funcion when the "Connect to Server" button is pressed
+    {
+        Thread mainThread = new Thread(Send);
+        mainThread.Start();
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Return))                         // When the button is pressed, start the message sendig procces
         {
-            //SendLocalChatMessage(chatInput.text, userName);
             SendMessageToServer(chatInput.text, userName + ": ");
-            //SendMessageToAllUsers(users, chatInput.text, userName);   // Start the message sending procces
             chatInput.text = "";                                      // Reset the input box text
         }
     }
@@ -47,55 +50,56 @@ public class ClientTCP : MonoBehaviour
     {
         if (string.IsNullOrEmpty(_message)) return;  // Check if the string have content
         //string S = _fromWho + ": " + _message;       // Format the message
-        chatManager.SendMessageToTCPChat(_message);         // Send Message to the local Server chat
+        chatManager.SendMessageToUDPChat(_message);         // Send Message to the local Server chat
     }
 
     void SendMessageToServer(string _message = "", string _fromWho = "")
     {
         if (string.IsNullOrEmpty(_message)) return;  // Check if the string have content
         string S = _fromWho + _message;       // Format the message
-  
-        byte[] data = Encoding.ASCII.GetBytes(S);  // Encoding the message
 
-        server.Send(data);
-    }
+        int port = 9050;
+        IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(serverIP), port);
+        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-    public void StartClient()
-    {
-        Thread connect = new Thread(Connect);  // Start the Thread with the conect funcion 
-        connect.Start();
-    }
-
-    void Connect()
-    {
-        IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(serverIP), 9050);                     // Create IPEndPoint With the chosen IP and Port
-        server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);  // Create TCP Socket 
-        server.Connect(ipep);
-
-        Thread sendThread = new Thread(Send);        // Start the Thread with the Send funcion
-        sendThread.Start();
-
-        Thread receiveThread = new Thread(Receive);  // Start the Thread with the Recive funcion
-        receiveThread.Start();
+        byte[] data = new byte[1024];
+        data = Encoding.UTF8.GetBytes(S);
+        server.SendTo(data, data.Length, SocketFlags.None, ipep);
     }
 
     void Send()
     {
-        //byte[] data = Encoding.ASCII.GetBytes(chatInput.text);
-        //server.Send(data);
-        SendMessageToServer(userName + ": joined the chat.");
+        int port = 9050;
+        IPEndPoint ipep = new IPEndPoint(IPAddress.Parse(serverIP), port);
+        server = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+        byte[] data = new byte[1024];
+        string handshake = userName + ": Joined the chat";
+        data = Encoding.UTF8.GetBytes(handshake);
+        server.SendTo(data, data.Length, SocketFlags.None, ipep);
+
+        Thread receive = new Thread(Receive);
+        receive.Start();
+
     }
 
     void Receive()
     {
+        IPEndPoint sender = new IPEndPoint(IPAddress.Parse(serverIP), 9050);
+        EndPoint Remote = (EndPoint)(sender);
         byte[] data = new byte[1024];
         int recv = 0;
+
+        //clientText = ("Message received from {0}: " + Remote.ToString());
+        //clientText = clientText += "Message received from {0}: " + Remote.ToString() + "\n" + Encoding.ASCII.GetString(data, 0, recv) + "\n";
+
+        //  Print the recived message to the local console 
 
         try
         {
             while (true)
             {
-                recv = server.Receive(data);
+                recv = server.ReceiveFrom(data, ref Remote);
                 if (recv > 0)
                 {
                     string message = Encoding.ASCII.GetString(data, 0, recv);
@@ -111,5 +115,5 @@ public class ClientTCP : MonoBehaviour
         {
             Debug.Log("Error in Receive: " + ex.Message);
         }
-    } 
+    }
 }

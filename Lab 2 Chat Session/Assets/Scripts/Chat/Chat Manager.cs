@@ -10,8 +10,11 @@ public class ChatManager : MonoBehaviour
     public GameObject udpChatPanel;
     public GameObject textObject;
 
-    Message messageIncoming;
+    Message tcpmessageIncoming;
     bool tcpMessage;
+
+    Message udpmessageIncoming;
+    bool udpMessage;
 
     [SerializeField]
     List<Message> messageList = new List<Message>();
@@ -30,16 +33,29 @@ public class ChatManager : MonoBehaviour
 
         if (tcpMessage)
         {
-            CreateMessage();
+            CreateTCPMessage();
             tcpMessage = false;
+        }
+
+        if (udpMessage)
+        {
+            CreateUDPMessage();
+            udpMessage = false;
         }
     }
 
-    void CreateMessage()
+    void CreateTCPMessage()
     {
         GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
-        messageIncoming.textObject = newText.GetComponent<TextMeshProUGUI>();
-        messageIncoming.textObject.text = messageIncoming.text;
+        tcpmessageIncoming.textObject = newText.GetComponent<TextMeshProUGUI>();
+        tcpmessageIncoming.textObject.text = tcpmessageIncoming.text;
+    }
+
+    void CreateUDPMessage()
+    {
+        GameObject newText = Instantiate(textObject, udpChatPanel.transform);
+        udpmessageIncoming.textObject = newText.GetComponent<TextMeshProUGUI>();
+        udpmessageIncoming.textObject.text = udpmessageIncoming.text;
     }
 
     public void SendMessageToTCPChat(string text)
@@ -47,7 +63,7 @@ public class ChatManager : MonoBehaviour
         Message newMessage = new Message();
         newMessage.text = text;
 
-        messageIncoming = newMessage;
+        tcpmessageIncoming = newMessage;
         tcpMessage = true;
 
         //GameObject newText = Instantiate(textObject, tcpChatPanel.transform);
@@ -62,9 +78,12 @@ public class ChatManager : MonoBehaviour
         Message newMessage = new Message();
         newMessage.text = text;
 
-        GameObject newText = Instantiate(textObject, udpChatPanel.transform);
-        newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
-        newMessage.textObject.text = newMessage.text;
+        udpmessageIncoming = newMessage;
+        udpMessage = true;
+
+        //GameObject newText = Instantiate(textObject, udpChatPanel.transform);
+        //newMessage.textObject = newText.GetComponent<TextMeshProUGUI>();
+        //newMessage.textObject.text = newMessage.text;
 
         messageList.Add(newMessage);
     }

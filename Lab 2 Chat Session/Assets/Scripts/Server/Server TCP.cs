@@ -5,7 +5,6 @@ using System.Threading;
 using TMPro;
 using System.Text;
 using System.Collections.Generic;
-using static ServerTCP;
 
 public class ServerTCP : MonoBehaviour
 {
@@ -40,8 +39,8 @@ public class ServerTCP : MonoBehaviour
     {
         users = new List<User>();
 
-        userName = "Boty";
-        serverName = "Server Boty";
+        userName = "Default Name";
+        serverName = "Default Server";
 
         if (!string.IsNullOrEmpty(ServerDataManager.instance.serverName))       // Check if the value is null
         {
@@ -92,7 +91,7 @@ public class ServerTCP : MonoBehaviour
 
     public void startServer()
     {
-        SendLocalChatMessage("Starting " + serverName + " Server.");
+        SendLocalChatMessage("Starting " + serverName + " TCP Server...");
 
         int port = 9050;
         socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
