@@ -28,4 +28,7 @@
  
 ## Known Bugs:
 - Clicking several times on the join button in the client scene breaks the connection.
+- Using the create server in the build doesn't work (You can't host while using the build try the package instead).
+
+If you use the Package, drag the scenes in the following order: Menu -> scene 0, Server -> scene 1, Client -> 2.
 
